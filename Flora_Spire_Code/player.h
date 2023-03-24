@@ -7,8 +7,8 @@ private:
 	float _speed;
 
 public:
-	void Update(double dt);
-	bool validmove(sf::Vector2f pos);
+	void Update(double dt) override;
 	Player();
-	void Render(sf::RenderWindow& window) const;
+	void Render(sf::RenderWindow& window) const override;
+	bool validmove(sf::Vector2f pos);
 };

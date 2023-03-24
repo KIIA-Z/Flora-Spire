@@ -1,6 +1,6 @@
 //entity.cpp
 #include "entity.h"
-#include "levelSystem.h"
+#include "LevelSystem.h"
 using namespace std;
 using namespace sf;
 

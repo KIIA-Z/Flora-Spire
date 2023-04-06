@@ -50,8 +50,14 @@ add_custom_target(copy_resources ALL COMMAND ${CMAKE_COMMAND}
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIGURATION>/res
 )
 
-#### Flora_Spire ####
+
+## Flora_Spire
 file(GLOB_RECURSE SOURCES Flora_Spire_Code/*.cpp Flora_Spire_Code/*.h)
-add_executable(Flora-Spire ${SOURCES})
-target_include_directories(Flora-Spire PRIVATE ${SFML_INCS})
-target_link_libraries(Flora-Spire sfml-graphics)
+file(GLOB_RECURSE CMPNTS Flora_Spire_Code/components/*.cpp Flora_Spire_Code/components/*.h)
+file(GLOB_RECURSE SCENES Flora_Spire_Code/scenes/*.cpp Flora_Spire_Code/scenes/*.h)
+add_executable(Flora-Spire ${SOURCES} ${RESOURCE_FILES})
+source_group("components" FILES ${CMPNTS})
+source_group("resources" FILES ${RESOURCE_FILES})
+#target_include_directories(Flora-Spire SYSTEM PRIVATE ${SFML_INCS} ${B2D_INCS})
+target_link_libraries(Flora-Spire lib_engine)
+set(EXECUTABLES ${EXECUTABLES} Flora-Spire)

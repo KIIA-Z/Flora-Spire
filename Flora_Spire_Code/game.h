@@ -1,9 +1,12 @@
-//game.h
+
 #pragma once
-#include <SFML/Graphics.hpp>
-#include "player.cpp"
 
-constexpr uint16_t gameWidth = 800;
-constexpr uint16_t gameHeight = 600;
+#include "scenes/scene_level1.h"
+#include "scenes/scene_level2.h"
+#include "scenes/scene_level3.h"
+#include "scenes/scene_menu.h"
 
-extern std::vector<Player*> players;
+extern MenuScene menu;
+extern Level1Scene level1;
+extern Level2Scene level2;
+extern Level3Scene level3;

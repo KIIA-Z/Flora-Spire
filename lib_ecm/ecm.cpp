@@ -1,5 +1,6 @@
 #include "ecm.h"
 
+
 using namespace std;
 
 Entity::Entity(Scene* const s)

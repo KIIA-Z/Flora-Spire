@@ -5,6 +5,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(Flora-Spire)
 
+function (copy_sfml_dll MyTarget )
+add_custom_command(TARGET ${MyTarget} POST_BUILD        # Adds a post-build event to MyTest
+    COMMAND ${CMAKE_COMMAND} -E copy_directory  # which executes "cmake - E copy_if_different..."
+        "${CMAKE_BINARY_DIR}/lib/sfml/bin/$<CONFIGURATION>"      # <--this is in-file
+        $<TARGET_FILE_DIR:${MyTarget}>)                 # <--this is out-file path
+endfunction()
+
 #### Setup Directories ####
 #Main output directory
 SET(OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/")
@@ -60,4 +67,5 @@ source_group("components" FILES ${CMPNTS})
 source_group("resources" FILES ${RESOURCE_FILES})
 #target_include_directories(Flora-Spire SYSTEM PRIVATE ${SFML_INCS} ${B2D_INCS})
 target_link_libraries(Flora-Spire lib_engine)
+copy_sfml_dll(Flora-Spire)
 set(EXECUTABLES ${EXECUTABLES} Flora-Spire)

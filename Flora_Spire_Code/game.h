@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "scenes/scene_level1.h"

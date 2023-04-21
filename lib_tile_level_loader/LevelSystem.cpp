@@ -42,6 +42,7 @@ void LevelSystem::loadLevelFile(const std::string& path, float tileSize) {
     f.read(&buffer[0], buffer.size());
     f.close();
   } else {
+      cout << "Couldn't open level file: " + path << endl;
     throw string("Couldn't open level file: ") + path;
   }
 

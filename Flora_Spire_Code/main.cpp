@@ -10,5 +10,5 @@ Level2Scene level2;
 Level3Scene level3;
 
 int main() {
-  Engine::Start(1280, 720, "Flora Spire",&menu);
+  Engine::Start(1280, 720, "Flora Spire ",&menu);
 }

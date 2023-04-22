@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics/RenderWindow.hpp>
+#include "user_preferences.h"
 #include <ecm.h>
 #include <future>
 #include <maths.h>
@@ -17,6 +18,7 @@ public:
   virtual void Render();
   bool isLoaded() const;
   std::shared_ptr<Entity> makeEntity();
+  sf::Vector2f mouse_pos;
 
   EntityManager ents;
 
@@ -37,6 +39,7 @@ public:
   static sf::RenderWindow& GetWindow();
   static sf::Vector2u getWindowSize();
   static void setVsync(bool b);
+  static UserPreferences user_preferences;
 
 private:
   static Scene* _activeScene;

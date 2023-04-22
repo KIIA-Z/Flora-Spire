@@ -4,9 +4,9 @@
 #include "../components/cmp_player_physics.h"
 #include "../components/cmp_sprite.h"
 #include "../components/cmp_text.h"
-#include "../components/cmp_life.h"
+//#include "../components/cmp_life.h"
 #include "../components/cmp_enemy_turret.h"
-#include "../components/cmp_follow_pos.h"
+//#include "../components/cmp_follow_pos.h"
 #include "../components/cmp_hurt_player.h"
 #include "../components/cmp_text_list.h"
 #include "../game.h"
@@ -27,12 +27,12 @@ static shared_ptr<Entity> fullscreen;
 
 void OptionScene::Load()
 {
-	auto resolution_text = makeEntity(false);
+	auto resolution_text = makeEntity();
 	auto t = resolution_text->addComponent<TextComponent>(
 		"Resolution:");
 	resolution_text->setPosition(Vector2f(200.f, 200.f));
 
-	resolution = makeEntity(false);
+	resolution = makeEntity();
 	vector<string> textlist1{ "800 x 600", "1000 x 800", "1024 x 800", "1280 x 1024", "1360 x 768", "1600 x 900", "1920 x 1080" };
 	auto t2 = resolution->addComponent<TextComponentList>(textlist1);
 	t2->setDefault(to_string(static_cast<int>(Engine::user_preferences.video_resolution.x)) + " x " + to_string(static_cast<int>(Engine::user_preferences.video_resolution.y)));
@@ -40,12 +40,12 @@ void OptionScene::Load()
 
 
 
-	auto fullscreen_text = makeEntity(false);
+	auto fullscreen_text = makeEntity();
 	t = fullscreen_text->addComponent<TextComponent>(
 		"Full Screen:");
 	fullscreen_text->setPosition(Vector2f(200.f, 300.f));
 
-	fullscreen = makeEntity(false);
+	fullscreen = makeEntity();
 	vector<string> textlist{ "ON", "OFF" };
 	auto t1 = fullscreen->addComponent<TextComponentList>(textlist);
 	if (Engine::user_preferences.fullscreen == 7)
@@ -56,7 +56,7 @@ void OptionScene::Load()
 
 	Texture z;
 	z.loadFromFile("res/images/ezgif.com-gif-maker640widthtransparent2.png");
-	shared_ptr<Entity> k = makeEntity(false);
+	shared_ptr<Entity> k = makeEntity();
 	k->setPosition(Vector2f(200.0f, 200.0f));
 	auto d = k->addComponent<SpriteComponent>();
 	d->setSprite(Sprite(*(d->setTexture(z)), IntRect(0, 0, 640, 480)));

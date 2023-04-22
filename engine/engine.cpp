@@ -12,6 +12,7 @@ using namespace sf;
 using namespace std;
 Scene* Engine::_activeScene = nullptr;
 std::string Engine::_gameName;
+UserPreferences Engine::user_preferences;
 
 static bool loading = false;
 static float loadingspinner = 0.f;
@@ -80,36 +81,39 @@ void Engine::Render(RenderWindow& window) {
 }
 
 void Engine::Start(unsigned int width, unsigned int height,
-                   const std::string& gameName, Scene* scn) {
-    RenderWindow window(VideoMode({ width, height }), gameName);
-  _gameName = gameName;
-  _window = &window;
-  Renderer::initialise(window);
-  Physics::initialise();
-  ChangeScene(scn);
-  while (window.isOpen()) {
-    Event event;
-    while (window.pollEvent(event)) {
-      if (event.type == Event::Closed) {
-        window.close();
-      }
-    }
-    if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-      window.close();
-    }
+    const std::string& gameName, Scene* scn) {
+    user_preferences.video_resolution_default = Vector2f(width, height);//store default resolution in order to use it when not on fullscreen
+    RenderWindow window(VideoMode({ width, height }), gameName, user_preferences.fullscreen); //to make it full screen
+    _gameName = gameName;
+    _window = &window;
+    Renderer::initialise(window);
+    Physics::initialise();
+    ChangeScene(scn);
+    while (window.isOpen()) {
+        Event event;
+        _activeScene->mouse_pos = Vector2f(-1.0f, -1.0f);
+        while (window.pollEvent(event)) {
+            if (event.type == Event::Closed) {
+                window.close();
+            }
+            if (event.type == Event::MouseButtonReleased) {
+                _activeScene->mouse_pos = Vector2f(Mouse::getPosition(window));
+            }
+        }
 
-    window.clear();
-    Update();
-    Render(window);
-    window.display();
-  }
-  if (_activeScene != nullptr) {
-    _activeScene->UnLoad();
-    _activeScene = nullptr;
-  }
-  window.close();
-  Physics::shutdown();
-  // Render::shutdown();
+
+        window.clear();
+        Update();
+        Render(window);
+        window.display();
+    }
+    if (_activeScene != nullptr) {
+        _activeScene->UnLoad();
+        _activeScene = nullptr;
+    }
+    window.close();
+    Physics::shutdown();
+    Renderer::shutdown();
 }
 
 std::shared_ptr<Entity> Scene::makeEntity() {

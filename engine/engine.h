@@ -35,10 +35,13 @@ public:
   Engine() = delete;
   static void Start(unsigned int width, unsigned int height,
                     const std::string& gameName, Scene* scn);
+  void Engine::restartLevel(float& dt);
+  //static void Quit(RenderWindow window);
   static void ChangeScene(Scene*);
   static sf::RenderWindow& GetWindow();
   static sf::Vector2u getWindowSize();
   static void setVsync(bool b);
+  static Scene* getActiveScene();
   static UserPreferences user_preferences;
 
 private:

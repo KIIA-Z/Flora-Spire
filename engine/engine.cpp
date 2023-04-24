@@ -111,9 +111,21 @@ void Engine::Start(unsigned int width, unsigned int height,
         _activeScene->UnLoad();
         _activeScene = nullptr;
     }
+
     window.close();
     Physics::shutdown();
     Renderer::shutdown();
+}
+
+void Engine::restartLevel(float& dt) {
+    static int posPoint = 0;
+    static float countdown = 0.0f;
+    countdown -= dt;
+    if (posPoint > 0 && countdown <= 0) {
+        countdown = 0.2f;
+        posPoint--;
+        Engine::ChangeScene((Scene*)Engine::getActiveScene());
+    }
 }
 
 std::shared_ptr<Entity> Scene::makeEntity() {
@@ -123,6 +135,11 @@ std::shared_ptr<Entity> Scene::makeEntity() {
 }
 
 void Engine::setVsync(bool b) { _window->setVerticalSyncEnabled(b); }
+
+Scene* Engine::getActiveScene()
+{
+    return _activeScene;
+}
 
 void Engine::ChangeScene(Scene* s) {
   cout << "Eng: changing scene: " << s << endl;
@@ -136,8 +153,8 @@ void Engine::ChangeScene(Scene* s) {
   if (!s->isLoaded()) {
     cout << "Eng: Entering Loading Screen\n";
     loadingTime =0;
-    //_activeScene->LoadAsync();
-    _activeScene->Load();
+    _activeScene->LoadAsync();
+    //_activeScene->Load();
     loading = true;
   }
 }

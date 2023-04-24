@@ -72,8 +72,8 @@ target_include_directories(lib_ecm INTERFACE "${CMAKE_SOURCE_DIR}/lib_ecm" )
 target_link_libraries(lib_ecm PRIVATE lib_maths)
 
 ## Flora_Spire
-file(GLOB_RECURSE SOURCES Flora_Spire_Code/*.cpp Flora_Spire_Code/*.h)
-file(GLOB_RECURSE CMPNTS Flora_Spire_Code/components/*.cpp Flora_Spire_Code/components/*.h)
+file(GLOB_RECURSE SOURCES Flora_Spire_Code/*.cpp Flora_Spire_Code/*.h Flora_Spire_Code/*.hpp)
+file(GLOB_RECURSE CMPNTS Flora_Spire_Code/components/*.cpp Flora_Spire_Code/components/*.h )
 file(GLOB_RECURSE SCENES Flora_Spire_Code/scenes/*.cpp Flora_Spire_Code/scenes/*.h)
 add_executable(Flora-Spire ${SOURCES} ${RESOURCE_FILES})
 source_group("components" FILES ${CMPNTS})

@@ -1,19 +1,51 @@
 #include "scene_menu.h"
 #include "../components/cmp_text.h"
 #include "../game.h"
-#include "../components/cmp_sprite.h"
 #include "../components/cmp_blinking.h"
+#include "../components/cmp_sprite.h"
 #include "SFML/Graphics.hpp"
 #include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Joystick.hpp>
 #include <SFML\Audio\Music.hpp>
+#include <SFML\Graphics.hpp>
 #include <iostream>
 #include <LevelSystem.h>
-//#include "../animatedSprite.hpp"
 
 using namespace std;
 using namespace sf;
 
+sf::Sound pointer;
+sf::Sound select;
+sf::SoundBuffer pointerBuff;
+sf::SoundBuffer selectBuff;
+
+sf::Texture treePic;
+
+
 void MenuScene::Load() {
+	if (sf::Joystick::isConnected(0)) {
+		cout << "controler is connected" << endl;
+	}
+
+	
+	
+
+	//loads muisc from file then plays music on a loop
+	menu.music.stop();
+	if (!this->music.openFromFile("res/music/menu_music.wav"))
+		cout << "Error: could not find music file";
+	this->music.setLoop(true);
+	this->music.setVolume(15);
+	this->music.play();
+
+	//loads jump sound to be used when player jumps
+	pointerBuff.loadFromFile(("res/sounds/pointer.wav"));
+	pointer.setBuffer(pointerBuff);
+
+	//loads hurt sound to be used when player is hurt
+	selectBuff.loadFromFile(("res/sounds/enter.wav"));
+	select.setBuffer(selectBuff);
+
 	{
 		auto title = makeEntity();
 		auto t = title->addComponent<TextComponent>(
@@ -54,18 +86,46 @@ void MenuScene::Load() {
 		for (int i = 0; i < posMenuItems.size(); i++) {
 			cout << posMenuItems[i] << endl;
 		}
-	}
-}
 
+		//menu picture
+		{
+			auto picture = makeEntity();
+			picture->addTag("pointer");
+			treePic.loadFromFile("res/img/treePic.png");
+			picture->setPosition(Vector2f(500.f, 150.f));
+			auto s = picture->addComponent<ShapeComponent>();
+			s->setShape<sf::RectangleShape>(Vector2f(500.f, 400.f));
+			s->getShape().setTexture(&treePic);
+			s->getShape().setOrigin(Vector2f(10.f, 15.f));
+			Picture.push_back(picture->getPosition());
+		}
+
+
+		
+	}
+}			
 
 void MenuScene::Update(const double& dt) {
-   //cout << "Menu Update "<<dt<<"\n";
+	if (sf::Joystick::isButtonPressed(0, 1)) {
+		cout << " is pressed" << endl;
+	}
 
    static int posPoint = 0;
-   static float countdown = 0.0f;
+   static float countdown = 1.0f;
    countdown -= dt;
 
-  if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
+   if (posPoint < 0) {
+	   posPoint = 3;
+	   ents.find("pointer")[0]->setPosition(posMenuItems[posPoint] - Vector2f(20.f, -20.f));
+   }
+
+   if (posPoint > 3) {
+	   posPoint = 0;
+	   ents.find("pointer")[0]->setPosition(posMenuItems[posPoint] - Vector2f(20.f, -20.f));
+   }
+
+  if (sf::Keyboard::isKeyPressed(Keyboard::Enter) || sf::Keyboard::isKeyPressed(Keyboard::E) || sf::Keyboard::isKeyPressed(Keyboard::Space)) {
+	  select.play();
 	  if (ents.find("pointer")[0]->getPosition() == posMenuItems[0] - Vector2f(20.f, -20.f)) {//newgame
 		  Engine::ChangeScene(&level1);
 	  }
@@ -74,6 +134,7 @@ void MenuScene::Update(const double& dt) {
 	  }
 	  else if (ents.find("pointer")[0]->getPosition() == posMenuItems[2] - Vector2f(20.f, -20.f)) {//options
 		  Engine::ChangeScene(&settings);
+		  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	  }
 	  else if (ents.find("pointer")[0]->getPosition() == posMenuItems[3] - Vector2f(20.f, -20.f)) {//exit
 		  Engine::GetWindow().close();
@@ -88,27 +149,31 @@ void MenuScene::Update(const double& dt) {
 	  if (posPoint < (posMenuItems.size() - 1) && countdown <= 0) {
 		  countdown = 0.15f;//using countdown to give time the player to press again (or will get in this if too many times, pc is fast!)
 		  posPoint++;
+		  pointer.play();
 		  cout << posPoint << endl;
 		  cout << posMenuItems[posPoint] << endl;
 		  ents.find("pointer")[0]->setPosition(posMenuItems[posPoint] - Vector2f(20.f, -20.f));
 	  }
+
   }
 
-  if (sf::Keyboard::isKeyPressed(Keyboard::Up)) {
+  if (sf::Keyboard::isKeyPressed(Keyboard::Up) || sf::Joystick::isButtonPressed(0,10)) {
 	  if (posPoint > 0 && countdown <= 0) {
 		  countdown = 0.2f;
 		  posPoint--;
+		  pointer.play();
 		  cout << posPoint << endl;
 		  cout << posMenuItems[posPoint] << endl;
 		  ents.find("pointer")[0]->setPosition(posMenuItems[posPoint] - Vector2f(20.f, -20.f));
 
 	  }
+	 
   }
 
   if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 
 
-  } // functionality needed for finding mouse click on entity 
+  } // functionality needed for detecting mouse click on entity 
 
 
   Scene::Update(dt);

@@ -2,12 +2,12 @@
 
 #include "engine.h"
 
-class SettingsScene : public Scene {
+class OptionsScene : public Scene {
 private:
 	std::vector<sf::Vector2f> posMenuItems;
 public:
-	SettingsScene() = default;
-  ~SettingsScene() override = default;
+	OptionsScene() = default;
+  ~OptionsScene() override = default;
 
   void Load() override;
 

@@ -1,59 +1,42 @@
-#include "scene_level2.h"
-#include "../components/cmp_enemy_ai.h"
-#include "../components/cmp_enemy_turret.h"
-#include "../components/cmp_hurt_player.h"
-#include "../components/cmp_physics.h"
 #include "../components/cmp_player_physics.h"
+#include "../components/cmp_physics.h"
+#include "../components/cmp_sprite.h"
+#include "../components/cmp_enemy_ai.h"
+#include "../components/cmp_hurt_player.h"
+#include "../components/cmp_player_attack.h"
 #include "../game.h"
+#include "SFML/Audio/Sound.hpp"
+#include "SFML/Audio/SoundBuffer.hpp"
+#include "SFML/Graphics.hpp"
 #include <LevelSystem.h>
 #include <iostream>
+#include <thread>
+
 using namespace std;
 using namespace sf;
 
 static shared_ptr<Entity> player;
+
 void Level2Scene::Load() {
-    cout << "Scene 2 Load" << endl;
+    cout << " Scene 1 Load" << endl;
     ls::loadLevelFile("res/levels/level_2.txt", 40.0f);
+
     auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
     ls::setOffset(Vector2f(0, ho));
 
     // Create player
     {
         player = makeEntity();
+        player->addTag("player");
+        p.loadFromFile("res/sprites/playerRight.png");
         player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]));
         auto s = player->addComponent<ShapeComponent>();
         s->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-        s->getShape().setFillColor(Color::Magenta);
+        //s->getShape().setFillColor(Color::Magenta);
+        s->getShape().setTexture(&p);
         s->getShape().setOrigin(Vector2f(10.f, 15.f));
-
-        player->addTag("player");
         player->addComponent<PlayerPhysicsComponent>(Vector2f(20.f, 30.f));
-    }
-
-
-    // Create Enemy
-    {
-        auto enemy = makeEntity();
-        enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]) +
-            Vector2f(0, 24));
-        auto s = enemy->addComponent<ShapeComponent>();
-        s->setShape<sf::CircleShape>(16.f);
-        s->getShape().setFillColor(Color::Red);
-        s->getShape().setOrigin(Vector2f(10.f, 15.f));
-        enemy->addComponent<HurtComponent>();
-        enemy->addComponent<EnemyAIComponent>();
-    }
-
-    // Create Turret
-    {
-        auto turret = makeEntity();
-        turret->setPosition(ls::getTilePosition(ls::findTiles('t')[0]) +
-            Vector2f(20, 0));
-        auto s = turret->addComponent<ShapeComponent>();
-        s->setShape<sf::CircleShape>(16.f, 3);
-        s->getShape().setFillColor(Color::Red);
-        s->getShape().setOrigin(Vector2f(16.f, 16.f));
-        turret->addComponent<EnemyTurretComponent>();
+        player->addComponent<PlayerAttackComponent>();
     }
 
     // Add physics colliders to level tiles.
@@ -66,42 +49,59 @@ void Level2Scene::Load() {
             e->setPosition(pos);
             e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
         }
-
-        cout << " Scene 2 Load Done" << endl;
-        setLoaded(true);
     }
+
+    //Simulate long loading times
+    std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+    cout << " Scene 1 Load Done" << endl;
+
+    setLoaded(true);
 }
 
 void Level2Scene::UnLoad() {
-  cout << "Scene 2 UnLoad" << endl;
-  player.reset();
-  ls::unload();
-  Scene::UnLoad();
+    cout << "Scene 2 Unload" << endl;
+    player.reset();
+    ls::unload();
+    Scene::UnLoad();
 }
 
 void Level2Scene::Update(const double& dt) {
-  Scene::Update(dt);
-  const auto pp = player->getPosition();
-  if (ls::getTileAt(pp) == ls::END) {
-    Engine::ChangeScene((Scene*)&level3);
-  } else if (!player->isAlive()) {
-    Engine::ChangeScene((Scene*)&level2);
-  }
 
-  static float countdown = 0.0f;
-  countdown -= dt;
+    if (ls::getTileAt(player->getPosition()) == ls::END) {
+        Engine::ChangeScene((Scene*)&level3);
+    }
+    Scene::Update(dt);
+    if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
+        Engine::GetWindow().close();
+    }
 
-  if ((sf::Keyboard::isKeyPressed(Keyboard::R))) {
-      if (countdown <= 0) {
-          countdown = 0.2f;
-          Engine::ChangeScene((Scene*)Engine::getActiveScene());
-          std::this_thread::sleep_for(std::chrono::milliseconds(1500));
-      }
 
-  }
+    countdown -= dt;
+
+    if (sf::Keyboard::isKeyPressed(Keyboard::Up) && countdown <= 0) {
+        countdown = 0.5f;
+        jump.play();
+    }
+
+    if (sf::Keyboard::isKeyPressed(Keyboard::Left)) {
+        p.loadFromFile("res/sprites/playerLeft.png");
+    }
+    if (sf::Keyboard::isKeyPressed(Keyboard::Right)) {
+        p.loadFromFile("res/sprites/playerRight.png");
+    }
+
+    if ((sf::Keyboard::isKeyPressed(Keyboard::R))) {
+        if (countdown <= 0) {
+            countdown = 0.2f;
+            Engine::ChangeScene((Scene*)Engine::getActiveScene());
+            std::this_thread::sleep_for(std::chrono::milliseconds(1250));
+        }
+
+    }
 }
 
 void Level2Scene::Render() {
-  ls::render(Engine::GetWindow());
-  Scene::Render();
+    ls::render(Engine::GetWindow());
+    Scene::Render();
 }
+

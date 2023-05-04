@@ -18,20 +18,29 @@ TextComponentList::TextComponentList(Entity * p, const std::vector<std::string> 
 		_text_list.push_back(text);
 	}
 	_text = _text_list.at(_text_list_index);
+	_parent->getPosition();
 }
+
+
 
 void TextComponentList::update(double dt)
 {
 	_text.setPosition(_parent->getPosition());
+	//cout << _parent->getPosition() << endl;
 	//checking if the click was close and then change the text
-	if (_text.getGlobalBounds().contains(_parent->scene->mouse_pos)) {
+	if (_parent->getPosition() == _parent->scene->pointer_pos - sf::Vector2f(-420.f, 20.f) && Keyboard::isKeyPressed(Keyboard::Enter)) {
 		if (!(_text_list_index++ < _text_list.size() - 1))
 			_text_list_index = 0;
 		_text = _text_list.at(_text_list_index);
 		changed = true;
 	}
-	else
+	else if (Keyboard::isKeyPressed(Keyboard::Enter))
+	{
+		cout << _parent->getPosition() << endl;
+	}
+	else{
 		changed = false;
+	}
 }
 
 void TextComponentList::render()

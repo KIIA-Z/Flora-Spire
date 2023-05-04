@@ -12,8 +12,10 @@
 class LevelSystem {
 public:
   static void loadLevelFile(const std::string&, float tileSize = 100.0f);
+  void LevelSystem::loadTextures();
   static void unload();
   static void render(sf::RenderWindow& window);
+  static sf::Texture _texture;
 
   typedef unsigned char Tile;
 
@@ -21,6 +23,7 @@ public:
     EMPTY = ' ',
     START = 's',
     END = 'e',
+    BLADE = 'b',
     WALL = 'w',
     ENEMY = 'n',
     WAYPOINT = '+'

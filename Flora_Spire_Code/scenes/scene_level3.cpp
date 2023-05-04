@@ -1,6 +1,7 @@
 #include "scene_level3.h"
 #include "../components/cmp_physics.h"
 #include "../components/cmp_player_physics.h"
+#include "../components/cmp_player_attack.h"
 #include "../game.h"
 #include "../components/cmp_bullet.h"
 #include <LevelSystem.h>
@@ -19,13 +20,16 @@ void Level3Scene::Load() {
     // Create player
     {
         player = makeEntity();
+        player->addTag("player");
+        p.loadFromFile("res/sprites/playerRight.png");
         player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]));
         auto s = player->addComponent<ShapeComponent>();
         s->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-        s->getShape().setFillColor(Color::Magenta);
+        //s->getShape().setFillColor(Color::Magenta);
+        s->getShape().setTexture(&p);
         s->getShape().setOrigin(Vector2f(10.f, 15.f));
-        player->addTag("player");
         player->addComponent<PlayerPhysicsComponent>(Vector2f(20.f, 30.f));
+        player->addComponent<PlayerAttackComponent>();
     }
 
     // Add physics colliders to level tiles.
@@ -56,6 +60,7 @@ void Level3Scene::Update(const double& dt) {
 
     const auto pp = player->getPosition();
     if (ls::getTileAt(pp) == ls::END) {
+        level1.music.stop();
         Engine::ChangeScene((Scene*)&menu);
     }
     else if (!player->isAlive()) {

@@ -29,6 +29,7 @@ void Loading_update(float dt, const Scene* const scn) {
     loadingTime += dt;
   }
 }
+
 void Loading_render() {
   // cout << "Eng: Loading Screen Render\n";
   static CircleShape octagon(80, 8);
@@ -91,13 +92,13 @@ void Engine::Start(unsigned int width, unsigned int height,
     ChangeScene(scn);
     while (window.isOpen()) {
         Event event;
-        _activeScene->mouse_pos = Vector2f(-1.0f, -1.0f);
+        //_activeScene->mouse_pos = Vector2f(-1.0f, -1.0f);
         while (window.pollEvent(event)) {
             if (event.type == Event::Closed) {
                 window.close();
             }
             if (event.type == Event::MouseButtonReleased) {
-                _activeScene->mouse_pos = Vector2f(Mouse::getPosition(window));
+              //  _activeScene->mouse_pos = Vector2f(Mouse::getPosition(window));
             }
         }
 
@@ -159,24 +160,43 @@ void Engine::ChangeScene(Scene* s) {
   }
 }
 
-void Scene::Update(const double& dt) { ents.update(dt); }
+std::shared_ptr<Sprite> Scene::getBackground()
+{
+    return _background;
+}
+
+void Scene::setBackground(sf::Sprite& background)
+{
+    _background.reset();
+    _background = make_shared<Sprite>(background);
+}
+
+void Scene::Update(const double& dt) {
+    //checks if player is attacking 
+    if (sf::Keyboard::isKeyPressed(Keyboard::E)) {
+      attacking = true;
+  }
+  else {
+      attacking = false;
+  }
+    ents.update(dt); }
 
 void Scene::Render() { ents.render(); }
 
 bool Scene::isLoaded() const {
-  {
-    std::lock_guard<std::mutex> lck(_loaded_mtx);
-    // Are we already loading asynchronously?
-    if (_loaded_future.valid() // yes
-        &&                     // Has it finished?
-        _loaded_future.wait_for(chrono::seconds(0)) ==
+    {
+        std::lock_guard<std::mutex> lck(_loaded_mtx);
+        // Are we already loading asynchronously?
+        if (_loaded_future.valid() // yes
+            &&                     // Has it finished?
+            _loaded_future.wait_for(chrono::seconds(0)) ==
             future_status::ready) {
-      // Yes
-      _loaded_future.get();
-      _loaded = true;
+            // Yes
+            _loaded_future.get();
+            _loaded = true;
+        }
+        return _loaded;
     }
-    return _loaded;
-  }
 }
 void Scene::setLoaded(bool b) {
   {

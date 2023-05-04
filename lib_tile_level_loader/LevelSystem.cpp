@@ -1,8 +1,11 @@
 #include "LevelSystem.h"
+#include "SFML/Graphics/Texture.hpp"
 #include <fstream>
 
 using namespace std;
 using namespace sf;
+
+Texture LevelSystem::_texture;
 
 std::map<LevelSystem::Tile, sf::Color> LevelSystem::_colours{
     {WALL, Color::White}, {END, Color::Red}};
@@ -27,6 +30,13 @@ float LevelSystem::_tileSize(100.f);
 Vector2f LevelSystem::_offset(0.0f, 30.0f);
 // Vector2f LevelSystem::_offset(0,0);
 vector<std::unique_ptr<sf::RectangleShape>> LevelSystem::_sprites;
+
+void LevelSystem::loadTextures()
+{
+    _texture.loadFromFile("res/sprites/wood.png");
+    
+    buildSprites();
+}
 
 void LevelSystem::loadLevelFile(const std::string& path, float tileSize) {
   _tileSize = tileSize;
@@ -162,9 +172,10 @@ void LevelSystem::buildSprites(bool optimise) {
     auto s = make_unique<sf::RectangleShape>();
     s->setPosition(t.p);
     s->setSize(t.s);
+    //change to exit sprite
     s->setFillColor(Color::Red);
     s->setFillColor(t.c);
-    // s->setFillColor(Color(rand()%255,rand()%255,rand()%255));
+    s->setTexture(&_texture);
     _sprites.push_back(move(s));
   }
 

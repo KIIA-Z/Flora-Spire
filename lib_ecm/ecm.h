@@ -1,5 +1,6 @@
 #pragma once
 #include "maths.h"
+#include <SFML/Graphics.hpp>
 #include <algorithm>
 #include <memory>
 #include <set>
@@ -38,8 +39,8 @@ struct EntityManager {
   find(const std::vector<std::string>& tags) const;
 };
 
-class Entity {
-  friend struct EntityManager;
+class Entity : sf::Sprite {
+ friend struct EntityManager;
 
 protected:
   std::vector<std::shared_ptr<Component>> _components;

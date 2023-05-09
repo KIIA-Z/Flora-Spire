@@ -160,17 +160,6 @@ void Engine::ChangeScene(Scene* s) {
   }
 }
 
-std::shared_ptr<Sprite> Scene::getBackground()
-{
-    return _background;
-}
-
-void Scene::setBackground(sf::Sprite& background)
-{
-    _background.reset();
-    _background = make_shared<Sprite>(background);
-}
-
 void Scene::Update(const double& dt) {
     //checks if player is attacking 
     if (sf::Keyboard::isKeyPressed(Keyboard::E)) {

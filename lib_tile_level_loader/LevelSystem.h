@@ -9,13 +9,16 @@
 
 #define ls LevelSystem
 
+struct tInfo {
+    int type;
+    sf::Vector2f pos;
+};
+
 class LevelSystem {
 public:
   static void loadLevelFile(const std::string&, float tileSize = 100.0f);
-  void LevelSystem::loadTextures();
   static void unload();
-  static void render(sf::RenderWindow& window);
-  static sf::Texture _texture;
+  //static void render(sf::RenderWindow& window);
 
   typedef unsigned char Tile;
 
@@ -24,6 +27,9 @@ public:
     START = 's',
     END = 'e',
     BLADE = 'b',
+    PIKE = 'k',
+    ROOFSPIKE = 'r',
+    DESTRUCTABLE = 'd',
     WALL = 'w',
     ENEMY = 'n',
     WAYPOINT = '+'
@@ -52,16 +58,16 @@ public:
   static const sf::Vector2f& getOffset();
 
   static float getTileSize();
+  static std::vector<tInfo> _sprites;
 
 protected:
   static std::unique_ptr<Tile[]> _tiles;
   static size_t _width;
   static size_t _height;
   static sf::Vector2f _offset;
+  
 
-  static std::vector<std::unique_ptr<sf::RectangleShape>> _sprites;
-
-  static void buildSprites(bool optimise = true);
+  static void buildSprites();
 
   static float _tileSize; // for rendering
   static std::map<Tile, sf::Color> _colours;

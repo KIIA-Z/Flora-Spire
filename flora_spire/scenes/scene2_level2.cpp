@@ -135,6 +135,9 @@ void Level2_2Scene::Update(const double& dt) {
         player2_2->setForDelete();
         death.play();
     }
+    else if (!player2_2->isAlive()) {
+        Engine::ChangeScene((Scene*)&level2_2);
+    }
 
 
   Scene::Update(dt);

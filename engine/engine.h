@@ -29,6 +29,8 @@ public:
   void setBackground(sf::Sprite& background);
   sf::Vector2f pointer_pos;
   sf::Texture p;
+  sf::Texture e1;
+  sf::Texture e2;
 
   //set up global access to varibles that hold player sounds 
   sf::Sound jump;

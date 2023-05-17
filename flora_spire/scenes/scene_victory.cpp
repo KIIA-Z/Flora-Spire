@@ -21,6 +21,7 @@ void VictoryScene::Update(const double& dt) {
   // cout << "Menu Update "<<dt<<"\n";
 
   if (sf::Keyboard::isKeyPressed(Keyboard::Enter) || sf::Keyboard::isKeyPressed(Keyboard::E) || sf::Keyboard::isKeyPressed(Keyboard::Space)) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(1250));
     Engine::ChangeScene(&menu);
   }
 

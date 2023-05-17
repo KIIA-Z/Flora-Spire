@@ -92,6 +92,57 @@ void Level2_4Scene::Load() {
     player2_4->addComponent<PlayerAttackComponent>();
   }
 
+  // Create Enemy
+  {
+      auto enemy = makeEntity();
+      enemy->addTag("enemy");
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]) +
+          Vector2f(0, 24));
+      auto s = enemy->addComponent<ShapeComponent>();
+      e1.loadFromFile("res/sprites/enemy_1.png");
+      s->setShape<sf::RectangleShape>(Vector2f(32, 32));
+      s->getShape().setTexture(&e1);
+      //s->getShape().setFillColor(Color::Red);
+      s->getShape().setOrigin(Vector2f(10.f, 15.f));
+      enemy->addComponent<HurtComponent>();
+      enemy->addComponent<HurtPlayerComponent>();
+      enemy->addComponent<EnemyAIComponent>();
+  }
+
+  // Create Enemy
+  {
+      auto enemy = makeEntity();
+      enemy->addTag("enemy");
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[1]) +
+          Vector2f(0, 24));
+      auto s = enemy->addComponent<ShapeComponent>();
+      e1.loadFromFile("res/sprites/enemy_1.png");
+      s->setShape<sf::RectangleShape>(Vector2f(32, 32));
+      s->getShape().setTexture(&e1);
+      //s->getShape().setFillColor(Color::Red);
+      s->getShape().setOrigin(Vector2f(10.f, 15.f));
+      enemy->addComponent<HurtComponent>();
+      enemy->addComponent<HurtPlayerComponent>();
+      enemy->addComponent<EnemyAIComponent>();
+  }
+
+  // Create Enemy
+  {
+      auto enemy = makeEntity();
+      enemy->addTag("enemy");
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[2]) +
+          Vector2f(0, 24));
+      auto s = enemy->addComponent<ShapeComponent>();
+      e1.loadFromFile("res/sprites/enemy_1.png");
+      s->setShape<sf::RectangleShape>(Vector2f(32, 32));
+      s->getShape().setTexture(&e1);
+      //s->getShape().setFillColor(Color::Red);
+      s->getShape().setOrigin(Vector2f(10.f, 15.f));
+      enemy->addComponent<HurtComponent>();
+      enemy->addComponent<HurtPlayerComponent>();
+      enemy->addComponent<EnemyAIComponent>();
+  }
+
   // Add physics colliders to level tiles.
   {
     auto walls = ls::findTiles(ls::WALL);
@@ -133,7 +184,9 @@ void Level2_4Scene::Update(const double& dt) {
         player2_4->setForDelete();
         death.play();
     }
-
+    else if (!player2_4->isAlive()) {
+        Engine::ChangeScene((Scene*)&level2_4);
+    }
 
   if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
       save2_4.UpdateSave(10);
@@ -141,8 +194,6 @@ void Level2_4Scene::Update(const double& dt) {
       music.pause();
       std::this_thread::sleep_for(std::chrono::milliseconds(3000));
   }
-
-
   
   countdown -= dt;
 

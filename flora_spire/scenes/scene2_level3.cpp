@@ -3,6 +3,7 @@
 #include "../Tiles.h"
 #include "../save.h"
 #include "../components/cmp_player_physics.h"
+#include "../components/cmp_enemy_turret.h"
 #include "../components/cmp_physics.h"
 #include "../components/cmp_enemy_ai.h"
 #include "../components/cmp_hurt_player.h"
@@ -88,6 +89,88 @@ void Level2_3Scene::Load() {
     player2_3->addComponent<PlayerAttackComponent>();
   }
 
+
+  // Create Enemy
+  {
+      auto enemy = makeEntity();
+      enemy->addTag("enemy");
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]) +
+          Vector2f(0, 24));
+      auto s = enemy->addComponent<ShapeComponent>();
+      e1.loadFromFile("res/sprites/enemy_1.png");
+      s->setShape<sf::RectangleShape>(Vector2f(32, 32));
+      s->getShape().setTexture(&e1);
+      //s->getShape().setFillColor(Color::Red);
+      s->getShape().setOrigin(Vector2f(10.f, 15.f));
+      enemy->addComponent<HurtComponent>();
+      enemy->addComponent<HurtPlayerComponent>();
+      enemy->addComponent<EnemyAIComponent>();
+  }
+
+  // Create Enemy
+  {
+      auto enemy = makeEntity();
+      enemy->addTag("enemy");
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[1]) +
+          Vector2f(0, 24));
+      auto s = enemy->addComponent<ShapeComponent>();
+      e1.loadFromFile("res/sprites/enemy_1.png");
+      s->setShape<sf::RectangleShape>(Vector2f(32, 32));
+      s->getShape().setTexture(&e1);
+      //s->getShape().setFillColor(Color::Red);
+      s->getShape().setOrigin(Vector2f(10.f, 15.f));
+      enemy->addComponent<HurtComponent>();
+      enemy->addComponent<HurtPlayerComponent>();
+      enemy->addComponent<EnemyAIComponent>();
+  }
+
+  /// Create Enemy
+  {
+      auto enemy = makeEntity();
+      enemy->addTag("enemy");
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]) +
+          Vector2f(0, 24));
+      auto s = enemy->addComponent<ShapeComponent>();
+      e1.loadFromFile("res/sprites/enemy_1.png");
+      s->setShape<sf::RectangleShape>(Vector2f(32, 32));
+      s->getShape().setTexture(&e1);
+      //s->getShape().setFillColor(Color::Red);
+      s->getShape().setOrigin(Vector2f(10.f, 15.f));
+      enemy->addComponent<HurtComponent>();
+      enemy->addComponent<HurtPlayerComponent>();
+      enemy->addComponent<EnemyAIComponent>();
+  }
+
+  // Create Enemy
+  {
+      auto enemy = makeEntity();
+      enemy->addTag("enemy");
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]) +
+          Vector2f(0, 24));
+      auto s = enemy->addComponent<ShapeComponent>();
+      e1.loadFromFile("res/sprites/enemy_1.png");
+      s->setShape<sf::RectangleShape>(Vector2f(32, 32));
+      s->getShape().setTexture(&e1);
+      //s->getShape().setFillColor(Color::Red);
+      s->getShape().setOrigin(Vector2f(10.f, 15.f));
+      enemy->addComponent<HurtComponent>();
+      enemy->addComponent<HurtPlayerComponent>();
+      enemy->addComponent<EnemyAIComponent>();
+  }
+
+  // Create Turret
+  {
+      auto turret = makeEntity();
+      turret->setPosition(ls::getTilePosition(ls::findTiles('t')[0]) +
+          Vector2f(20, 0));
+      auto s = turret->addComponent<ShapeComponent>();
+      s->setShape<sf::CircleShape>(16.f, 3);
+      s->getShape().setFillColor(Color::Red);
+      s->getShape().setOrigin(Vector2f(16.f, 16.f));
+      turret->addComponent<EnemyTurretComponent>();
+  }
+
+
   // Add physics colliders to level tiles.
   {
     auto walls = ls::findTiles(ls::WALL);
@@ -122,12 +205,15 @@ void Level2_3Scene::Update(const double& dt) {
         Engine::ChangeScene((Scene*)&level2_4);
     }
     else if (ls::getTileAt(player2_3->getPosition()) == ls::PIKE) {
-        player2_3->setForDelete();
+        Engine::ChangeScene((Scene*)&level2_3);
         death.play();
     }
     else if (ls::getTileAt(player2_3->getPosition()) == ls::ROOFSPIKE) {
-        player2_3->setForDelete();
+        Engine::ChangeScene((Scene*)&level2_3);
         death.play();
+    }
+    else if (!player2_3->isAlive()) {
+        Engine::ChangeScene((Scene*)&level2_3);
     }
 
   if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {

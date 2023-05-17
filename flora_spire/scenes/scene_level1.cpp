@@ -61,9 +61,6 @@ void Level1Scene::Load() {
  BackgroundSprite.setTexture(BackgroundTexture);
  BackgroundSprite.setScale(Vector2f(2,2));
 
-
-
-
   //loads muisc from file then plays music on a loop
   menu.music.stop();
   if (!this->music.openFromFile("res/music/area_1.wav"))
@@ -108,12 +105,14 @@ void Level1Scene::Load() {
   // Create Enemy
   {
       auto enemy = makeEntity();
-      player->addTag("enemy");
+      enemy->addTag("enemy");
       enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]) +
          Vector2f(0, 24));
       auto s = enemy->addComponent<ShapeComponent>();
-      s->setShape<sf::CircleShape>(16.f);
-      s->getShape().setFillColor(Color::Red);
+      e1.loadFromFile("res/sprites/enemy_1.png");
+      s->setShape<sf::RectangleShape>(Vector2f(32,32));
+      s->getShape().setTexture(&e1);
+      //s->getShape().setFillColor(Color::Red);
       s->getShape().setOrigin(Vector2f(10.f, 15.f));
       enemy->addComponent<HurtComponent>();
       enemy->addComponent<HurtPlayerComponent>();
@@ -163,8 +162,7 @@ void Level1Scene::Update(const double& dt) {
       Engine::ChangeScene((Scene*)&menu);
       music.pause();
       std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-  }
-
+  }     
 
   
   countdown -= dt;

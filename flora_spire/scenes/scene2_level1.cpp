@@ -3,6 +3,7 @@
 #include "../Tiles.h"
 #include "../save.h"
 #include "../components/cmp_player_physics.h"
+#include "../components/cmp_enemy_turret.h"
 #include "../components/cmp_physics.h"
 #include "../components/cmp_enemy_ai.h"
 #include "../components/cmp_hurt_player.h"
@@ -100,6 +101,18 @@ void Level2_1Scene::Load() {
     player2_1->addComponent<PlayerAttackComponent>();
   }
 
+  // Create Turret
+  {
+      auto turret = makeEntity();
+      turret->setPosition(ls::getTilePosition(ls::findTiles('t')[0]) +
+          Vector2f(20, 0));
+      auto s = turret->addComponent<ShapeComponent>();
+      s->setShape<sf::CircleShape>(16.f, 3);
+      s->getShape().setFillColor(Color::Red);
+      s->getShape().setOrigin(Vector2f(16.f, 16.f));
+      turret->addComponent<EnemyTurretComponent>();
+  }
+
   // Add physics colliders to level tiles.
   {
     auto walls = ls::findTiles(ls::WALL);
@@ -139,6 +152,9 @@ void Level2_1Scene::Update(const double& dt) {
   else if (ls::getTileAt(player2_1->getPosition()) == ls::ROOFSPIKE) {
       player2_1->setForDelete();
       death.play();
+  }
+  else if (!player2_1->isAlive()) {
+      Engine::ChangeScene((Scene*)&level2_1);
   }
 
   if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {

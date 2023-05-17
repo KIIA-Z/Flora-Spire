@@ -12,7 +12,6 @@ void HurtComponent::update(double dt) {
 
             if (length(pl->getPosition() - _parent->getPosition()) < 50.0) {
                 _parent->setForDelete();
-                //_parent->scene->addScore(10);
             }
         }
     } 
